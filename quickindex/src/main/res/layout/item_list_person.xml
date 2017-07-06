@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/tv_index"
+        android:text="A"
+        android:background="#666666"
+        android:layout_width="match_parent"
+        android:textColor="#FFF"
+        android:textSize="22sp"
+        android:paddingLeft="15dp"
+        android:gravity="center_vertical"
+        android:layout_height="40dp" />
+    <TextView
+        android:id="@+id/tv_name"
+        android:text="宋江"
+        android:layout_width="match_parent"
+        android:textSize="24sp"
+        android:paddingLeft="15dp"
+        android:gravity="center_vertical"
+        android:layout_height="50dp" />
+
+</LinearLayout>
