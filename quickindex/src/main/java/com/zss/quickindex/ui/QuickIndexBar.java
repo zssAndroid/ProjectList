@@ -83,7 +83,7 @@ public class QuickIndexBar extends View {
 //            canvas.drawCircle(x, y, 3f, paint);
         }
     }
-   
+
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
