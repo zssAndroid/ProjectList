@@ -1,1 +1,1 @@
-include ':app', ':slidingmenu', ':slidingmenu2', ':quickindex'
+include ':app', ':slidingmenu', ':slidingmenu2', ':quickindex', ':tab', ':recyclerviewexample', ':viewpagerindicator'

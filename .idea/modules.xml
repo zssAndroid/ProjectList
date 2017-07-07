@@ -5,8 +5,11 @@
       <module fileurl="file://$PROJECT_DIR$/ProjectList.iml" filepath="$PROJECT_DIR$/ProjectList.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/quickindex/quickindex.iml" filepath="$PROJECT_DIR$/quickindex/quickindex.iml" />
+      <module fileurl="file://$PROJECT_DIR$/recyclerviewexample/recyclerviewexample.iml" filepath="$PROJECT_DIR$/recyclerviewexample/recyclerviewexample.iml" />
       <module fileurl="file://$PROJECT_DIR$/slidingmenu/slidingmenu.iml" filepath="$PROJECT_DIR$/slidingmenu/slidingmenu.iml" />
       <module fileurl="file://$PROJECT_DIR$/slidingmenu2/slidingmenu2.iml" filepath="$PROJECT_DIR$/slidingmenu2/slidingmenu2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tab/tab.iml" filepath="$PROJECT_DIR$/tab/tab.iml" />
+      <module fileurl="file://$PROJECT_DIR$/viewpagerindicator/viewpagerindicator.iml" filepath="$PROJECT_DIR$/viewpagerindicator/viewpagerindicator.iml" />
     </modules>
   </component>
 </project>
