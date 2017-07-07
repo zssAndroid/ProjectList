@@ -9,6 +9,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/prolist" />
             <option value="$PROJECT_DIR$/quickindex" />
             <option value="$PROJECT_DIR$/recyclerviewexample" />
             <option value="$PROJECT_DIR$/slidingmenu" />

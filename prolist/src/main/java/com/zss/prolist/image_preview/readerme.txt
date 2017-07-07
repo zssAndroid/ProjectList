@@ -1,0 +1,14 @@
+所要达到的目的：
+	1、自由的放大、缩小
+	2、双击放大、缩小
+	3、放大以后可以尽心自由的移动
+	4、处理与ViewPager之间的事件冲突
+	
+所用到的知识点：
+	1、Matrix
+	2、ScaleGestureDetector 多指触控缩放手势
+	3、GestureDetector
+	4、事件分发机制
+	
+代码实现：
+	1、复写ImageView实现效果
