@@ -16,288 +16,282 @@ import com.example.lib.R;
  * 录音按钮
  *
  * @author Administrator
- *
  */
 public class AudioRecorderButton extends Button {
-	private final String FILE_RECORDER = "/hyjlib";// 录音存放文件
-	private final int VOICE_MAX_LEVEL = 7;// 最大音量
+    private final String FILE_RECORDER = "/hyjlib";// 录音存放文件
+    private final int VOICE_MAX_LEVEL = 7;// 最大音量
 
-	private final int MSG_AUDIO_PREPARED = 0x100;// 准备完毕
-	private final int MSG_VOICE_CHANGED = 0x101;
-	private final int MSG_DIALOG_DISMISS = 0x102;
+    private final int MSG_AUDIO_PREPARED = 0x100;// 准备完毕
+    private final int MSG_VOICE_CHANGED = 0x101;
+    private final int MSG_DIALOG_DISMISS = 0x102;
 
-	private final int STATE_NORMAL = 0x0001;// 正常状态
-	private final int STATE_RECORDING = 0x0002;// 录音状态
-	private final int STATE_WANT_CANCEL = 0x0003;// 取消
-	private final int DISTANCE_CANCEL_Y = 50;// y轴方向取消时移动的距离;
+    private final int STATE_NORMAL = 0x0001;// 正常状态
+    private final int STATE_RECORDING = 0x0002;// 录音状态
+    private final int STATE_WANT_CANCEL = 0x0003;// 取消
+    private final int DISTANCE_CANCEL_Y = 50;// y轴方向取消时移动的距离;
 
-	private Vibrator mVibrator;// 调用震动
+    private Vibrator mVibrator;// 调用震动
 
-	private int mCurState = STATE_NORMAL;// 当前录音状态
-	private boolean isRecording = false;// 是否开始录音
+    private int mCurState = STATE_NORMAL;// 当前录音状态
+    private boolean isRecording = false;// 是否开始录音
 
-	private DialogManager mDialogManager;
-	private AudioManager mAudioManager;
+    private DialogManager mDialogManager;
+    private AudioManager mAudioManager;
 
-	private float mTime;// 录音时间长度
-	private boolean mReady;// 是否触发LongClick
+    private float mTime;// 录音时间长度
+    private boolean mReady;// 是否触发LongClick
 
-	private AudioRecorderFinishListener mFinishListener;
-	private AudioRecorderLongClickLisetener mLongClickListener;
+    private AudioRecorderFinishListener mFinishListener;
+    private AudioRecorderLongClickLisetener mLongClickListener;
 
-	/**
-	 * 设置录音结束时监听事件
-	 *
-	 * @param mFinishListener
-	 */
-	public void setOnAudioRecorderFinishListener(
-			AudioRecorderFinishListener mFinishListener) {
-		this.mFinishListener = mFinishListener;
-	}
+    /**
+     * 设置录音结束时监听事件
+     *
+     * @param mFinishListener
+     */
+    public void setOnAudioRecorderFinishListener(AudioRecorderFinishListener mFinishListener) {
+        this.mFinishListener = mFinishListener;
+    }
 
-	/**
-	 * 录音长按监听事件
-	 *
-	 * @param mLongClickListener
-	 */
-	public void setOnAudioRecorderLongClickLisetener(
-			AudioRecorderLongClickLisetener mLongClickListener) {
-		this.mLongClickListener = mLongClickListener;
-	}
+    /**
+     * 录音长按监听事件
+     *
+     * @param mLongClickListener
+     */
+    public void setOnAudioRecorderLongClickLisetener(AudioRecorderLongClickLisetener mLongClickListener) {
+        this.mLongClickListener = mLongClickListener;
+    }
 
-	/**
-	 * 获取音量大小
-	 */
-	private Runnable mGetVoiceLevelRunnable = new Runnable() {
+    /**
+     * 获取音量大小
+     */
+    private Runnable mGetVoiceLevelRunnable = new Runnable() {
 
-		@Override
-		public void run() {
-			while (isRecording) {
-				try {
-					Thread.sleep(100);
-					mTime += 0.1f;
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+        @Override
+        public void run() {
+            while (isRecording) {
+                try {
+                    Thread.sleep(100);
+                    mTime += 0.1f;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
-				mHandler.sendEmptyMessage(MSG_VOICE_CHANGED);
-			}
-		}
-	};
+                mHandler.sendEmptyMessage(MSG_VOICE_CHANGED);
+            }
+        }
+    };
 
-	private Handler mHandler = new Handler() {
-		public void handleMessage(Message msg) {
-			switch (msg.what) {
-				case MSG_AUDIO_PREPARED:
-					mDialogManager.showRecordingDialog();
-					isRecording = true;
-					new Thread(mGetVoiceLevelRunnable).start();
-					break;
+    private Handler mHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case MSG_AUDIO_PREPARED:
+                    mDialogManager.showRecordingDialog();
+                    isRecording = true;
+                    new Thread(mGetVoiceLevelRunnable).start();
+                    break;
 
-				case MSG_VOICE_CHANGED:
-					mDialogManager.updateVoiceLevel(mAudioManager
-							.getVoiceLevel(VOICE_MAX_LEVEL));
-					break;
+                case MSG_VOICE_CHANGED:
+                    mDialogManager.updateVoiceLevel(mAudioManager
+                            .getVoiceLevel(VOICE_MAX_LEVEL));
+                    break;
 
-				case MSG_DIALOG_DISMISS:
-					mDialogManager.dismissDialog();
-					break;
-			}
-		};
-	};
+                case MSG_DIALOG_DISMISS:
+                    mDialogManager.dismissDialog();
+                    break;
+            }
+        }
 
-	public AudioRecorderButton(Context context) {
-		this(context, null);
-	}
+        ;
+    };
 
-	public AudioRecorderButton(Context context, AttributeSet attrs) {
-		this(context, attrs, 0);
-	}
+    public AudioRecorderButton(Context context) {
+        this(context, null);
+    }
 
-	public AudioRecorderButton(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
+    public AudioRecorderButton(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
 
-		myInit(context);
-	}
+    public AudioRecorderButton(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
 
-	private void myInit(Context context) {
-		initView(context);
-		initListener();
-	}
+        myInit(context);
+    }
 
-	private void initView(Context context) {
-		mDialogManager = new DialogManager(getContext());
-		String dir = Environment.getExternalStorageDirectory() + FILE_RECORDER;
-		mAudioManager = AudioManager.getInstance(dir);
+    private void myInit(Context context) {
+        initView(context);
+        initListener();
+    }
 
-		mVibrator = (Vibrator) context
-				.getSystemService(Context.VIBRATOR_SERVICE);
-	}
+    private void initView(Context context) {
+        mDialogManager = new DialogManager(getContext());
+        String dir = Environment.getExternalStorageDirectory() + FILE_RECORDER;
+        mAudioManager = AudioManager.getInstance(dir);
 
-	private void initListener() {
-		mAudioManager.setOnAudioStateListener(new AudioManager.AudioStateListener() {
+        mVibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+    }
 
-			@Override
-			public void wellPrepared() {
-				mHandler.sendEmptyMessage(MSG_AUDIO_PREPARED);
-			}
-		});
+    private void initListener() {
+        mAudioManager.setOnAudioStateListener(new AudioManager.AudioStateListener() {
 
-		setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public void wellPrepared() {
+                mHandler.sendEmptyMessage(MSG_AUDIO_PREPARED);
+            }
+        });
 
-			@Override
-			public boolean onLongClick(View v) {
-				mReady = true;
-				mAudioManager.prepareAudio();
-				mVibrator.vibrate(30);// 震动
-				if (null != mLongClickListener) {
-					mLongClickListener.onLongClick(v);
-				}
-				return false;
-			}
-		});
-	}
+        setOnLongClickListener(new OnLongClickListener() {
 
-	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-		int action = event.getAction();
-		int x = (int) event.getX();
-		int y = (int) event.getY();
+            @Override
+            public boolean onLongClick(View v) {
+                mReady = true;
+                mAudioManager.prepareAudio();
+                mVibrator.vibrate(30);// 震动
+                if (null != mLongClickListener) {
+                    mLongClickListener.onLongClick(v);
+                }
+                return false;
+            }
+        });
+    }
 
-		switch (action) {
-			case MotionEvent.ACTION_DOWN:
-				changeState(STATE_RECORDING);
-				break;
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        int action = event.getAction();
+        int x = (int) event.getX();
+        int y = (int) event.getY();
 
-			case MotionEvent.ACTION_MOVE:
-				if (!isRecording) {
-					break;
-				}
-				// 根据X、Y坐标判断是否需要取消
-				if (wantToCancel(x, y)) {
-					changeState(STATE_WANT_CANCEL);
-				} else {
-					changeState(STATE_RECORDING);
-				}
-				break;
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                changeState(STATE_RECORDING);
+                break;
 
-			case MotionEvent.ACTION_UP:
-				if (!mReady) {
-					reset();
-					break;
-				}
+            case MotionEvent.ACTION_MOVE:
+                if (!isRecording) {
+                    break;
+                }
+                // 根据X、Y坐标判断是否需要取消
+                if (wantToCancel(x, y)) {
+                    changeState(STATE_WANT_CANCEL);
+                } else {
+                    changeState(STATE_RECORDING);
+                }
+                break;
 
-				if (!isRecording || mTime < 0.6f) {
-					mDialogManager.showTooShortDialog();
-					mAudioManager.cancel();
-					mHandler.sendEmptyMessageDelayed(MSG_DIALOG_DISMISS, 1300);
-				} else if (STATE_RECORDING == mCurState) {// 正常录制结束
-					mDialogManager.dismissDialog();
-					mAudioManager.release();
+            case MotionEvent.ACTION_UP:
+                if (!mReady) {
+                    reset();
+                    break;
+                }
 
-					if (null != mFinishListener) {
-						mFinishListener.onFinish(mTime,
-								mAudioManager.getCurrentFilePath());
-					}
-				} else if (STATE_WANT_CANCEL == mCurState) {
-					mDialogManager.dismissDialog();
-					mAudioManager.cancel();
-				}
+                if (!isRecording || mTime < 0.6f) {
+                    mDialogManager.showTooShortDialog();
+                    mAudioManager.cancel();
+                    mHandler.sendEmptyMessageDelayed(MSG_DIALOG_DISMISS, 1300);
+                } else if (STATE_RECORDING == mCurState) {// 正常录制结束
+                    mDialogManager.dismissDialog();
+                    mAudioManager.release();
 
-				reset();
-				break;
-		}
+                    if (null != mFinishListener) {
+                        mFinishListener.onFinish(mTime,
+                                mAudioManager.getCurrentFilePath());
+                    }
+                } else if (STATE_WANT_CANCEL == mCurState) {
+                    mDialogManager.dismissDialog();
+                    mAudioManager.cancel();
+                }
 
-		return super.onTouchEvent(event);
-	}
+                reset();
+                break;
+        }
 
-	/**
-	 * 恢复状态、标志位
-	 */
-	private void reset() {
-		mTime = 0;
-		mReady = false;
-		isRecording = false;
-		changeState(STATE_NORMAL);
-	}
+        return super.onTouchEvent(event);
+    }
 
-	/**
-	 * 是否想取消发送
-	 *
-	 * @param x
-	 * @param y
-	 * @return
-	 */
-	private boolean wantToCancel(int x, int y) {
-		if (x < 0 || x > getWidth()) {// 判断手指横坐标是否超出按钮范围
-			return true;
-		}
+    /**
+     * 恢复状态、标志位
+     */
+    private void reset() {
+        mTime = 0;
+        mReady = false;
+        isRecording = false;
+        changeState(STATE_NORMAL);
+    }
 
-		if (y < -DISTANCE_CANCEL_Y || y > getHeight() + DISTANCE_CANCEL_Y) {
-			return true;
-		}
+    /**
+     * 是否想取消发送
+     *
+     * @param x
+     * @param y
+     * @return
+     */
+    private boolean wantToCancel(int x, int y) {
+        if (x < 0 || x > getWidth()) {// 判断手指横坐标是否超出按钮范围
+            return true;
+        }
 
-		return false;
-	}
+        if (y < -DISTANCE_CANCEL_Y || y > getHeight() + DISTANCE_CANCEL_Y) {
+            return true;
+        }
 
-	private void changeState(int state) {
-		if (state == mCurState) {// 状态相等无需改变
-			return;
-		}
+        return false;
+    }
 
-		mCurState = state;
-		switch (state) {
-			case STATE_NORMAL:
-				setBackgroundResource(R.drawable.btn_recorder_normal);
-				setText(R.string.recorder_normal);
-				break;
+    private void changeState(int state) {
+        if (state == mCurState) {// 状态相等无需改变
+            return;
+        }
 
-			case STATE_RECORDING:
-				setBackgroundResource(R.drawable.btn_recorder_recording);
-				setText(R.string.recorder_recording);
-				if (isRecording) {
-					mDialogManager.recording();
-				}
-				break;
+        mCurState = state;
+        switch (state) {
+            case STATE_NORMAL:
+                setBackgroundResource(R.drawable.btn_recorder_normal);
+                setText(R.string.recorder_normal);
+                break;
 
-			case STATE_WANT_CANCEL:
-				setBackgroundResource(R.drawable.btn_recorder_recording);
-				setText(R.string.recorder_want_cancel);
-				mDialogManager.showWantCancelDialog();
-				break;
-		}
-	}
+            case STATE_RECORDING:
+                setBackgroundResource(R.drawable.btn_recorder_recording);
+                setText(R.string.recorder_recording);
+                if (isRecording) {
+                    mDialogManager.recording();
+                }
+                break;
 
-	/**
-	 * 录音完成后的回调
-	 *
-	 * @author async
-	 *
-	 */
-	public interface AudioRecorderFinishListener {
-		/**
-		 * 录音结束
-		 *
-		 * @param seconds
-		 *            录音时长
-		 * @param filePath
-		 *            录音路径
-		 */
-		public void onFinish(float seconds, String filePath);
-	}
+            case STATE_WANT_CANCEL:
+                setBackgroundResource(R.drawable.btn_recorder_recording);
+                setText(R.string.recorder_want_cancel);
+                mDialogManager.showWantCancelDialog();
+                break;
+        }
+    }
 
-	/**
-	 * 录音长按事件
-	 *
-	 * @author Administrator
-	 *
-	 */
-	public interface AudioRecorderLongClickLisetener {
-		/**
-		 * 长按事件
-		 *
-		 * @param v
-		 */
-		public void onLongClick(View v);
-	}
+    /**
+     * 录音完成后的回调
+     *
+     * @author async
+     */
+    public interface AudioRecorderFinishListener {
+        /**
+         * 录音结束
+         *
+         * @param seconds  录音时长
+         * @param filePath 录音路径
+         */
+        public void onFinish(float seconds, String filePath);
+    }
+
+    /**
+     * 录音长按事件
+     *
+     * @author Administrator
+     */
+    public interface AudioRecorderLongClickLisetener {
+        /**
+         * 长按事件
+         *
+         * @param v
+         */
+        public void onLongClick(View v);
+    }
 }

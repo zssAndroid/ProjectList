@@ -17,7 +17,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/zss"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
@@ -55,7 +55,7 @@
         <!-- 轮播广告图片 -->
         <activity android:name="com.zss.prolist.imagecycle.ImageCycleViewActivity" />
 
-        <!-- 文件断点续传　　　　下载 -->
+        <!-- 文件断点续传下载 -->
         <activity android:name="com.zss.prolist.downservice.DownServiceActivity" />
 
         <service android:name="com.zss.prolist.downservice.service.DownService" />
